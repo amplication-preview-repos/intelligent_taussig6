@@ -1,0 +1,58 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Customer {
+  createdAt DateTime   @default(now())
+  email     String?
+  estimates Estimate[]
+  id        String     @id @default(cuid())
+  invoices  Invoice[]
+  name      String?
+  phone     String?
+  updatedAt DateTime   @updatedAt
+}
+
+model Project {
+  createdAt   DateTime           @default(now())
+  description String?
+  estimates   Estimate[]
+  id          String             @id @default(cuid())
+  invoices    Invoice[]
+  status      EnumProjectStatus?
+  title       String?
+  updatedAt   DateTime           @updatedAt
+}
+
+model Invoice {
+  amount     Float?
+  createdAt  DateTime  @default(now())
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId String?
+  date       DateTime?
+  id         String    @id @default(cuid())
+  project    Project?  @relation(fields: [projectId], references: [id])
+  projectId  String?
+  updatedAt  DateTime  @updatedAt
+}
+
+model Estimate {
+  amount     Float?
+  createdAt  DateTime  @default(now())
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId String?
+  date       DateTime?
+  id         String    @id @default(cuid())
+  project    Project?  @relation(fields: [projectId], references: [id])
+  projectId  String?
+  updatedAt  DateTime  @updatedAt
+}
+
+enum EnumProjectStatus {
+  Option1
+}
